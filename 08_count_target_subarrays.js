@@ -76,3 +76,46 @@ function countSubArrays(nums, target){
 }
 
 console.log(countSubArrays(nums, target));
+
+/*
+const nums = [1, 2, 1, 2, 1];
+const target = 3;
+
+// 1️⃣ Module 1: Sirf map ko update karne ka kaam karega
+function updatePrefixMap(map, sum) {
+    if (sum in map) {
+        map[sum] = map[sum] + 1;
+    } else {
+        map[sum] = 1;
+    }
+}
+
+// 2️⃣ Module 2: Sirf check karega ke diff map mein hai ya nahi
+function getMatchingSubarrays(map, diff) {
+    if (diff in map) {
+        return map[diff]; // Jitni baar aya hai, woh count return kar do
+    }
+    return 0; // Agar nahi hai toh 0
+}
+
+// 3️⃣ Main Module: Jo saare pieces ko jorta hai
+function countSubArrays(nums, target) {
+    let currentSum = 0;
+    let count = 0;
+    let prefixSumMap = { 0: 1 }; // Base rule
+
+    for (let n of nums) {
+        currentSum += n; 
+        let diff = currentSum - target;
+
+        // Modularity ka jaadu: Alag functions ko bula liya
+        count += getMatchingSubarrays(prefixSumMap, diff);
+        updatePrefixMap(prefixSumMap, currentSum);
+    }
+
+    return count;
+}
+
+console.log(countSubArrays(nums, target)); 
+// Output: 4 🎉
+*/
