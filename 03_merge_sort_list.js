@@ -19,50 +19,66 @@ class ListNode {
     this.next = next;
   }
 }
-// List 1: 1 -> 3 -> 5
-const list1 = new ListNode(1, new ListNode(3, new ListNode(5)));
-// List 2: 2 -> 4 -> 6
-const list2 = new ListNode(2, new ListNode(4, new ListNode(6)));
 
+// 1️⃣ Module: Chota node chunna aur us list ka pointer aage sarkanay ka kaam
+function getNextNodeToMerge(list1, list2) {
+  if (list1.val < list2.val) {
+    return { selectedNode: list1, updatedList1: list1.next, updatedList2: list2 };
+  } else {
+    return { selectedNode: list2, updatedList1: list1, updatedList2: list2.next };
+  }
+}
+
+// 2️⃣ Module: Node ko result list ke aage jorna aur current ko aage move karna
+function attachNode(current, node) {
+  current.next = node;
+  return current.next; // Naya current return kar diya
+}
+
+// 3️⃣ Module: Agar koi list bach jaye, toh usay aakhri mein attach karna
+function attachRemainingNodes(current, list1, list2) {
+  current.next = (list1 !== null) ? list1 : list2;
+}
+
+// 4️⃣ Printer Module: List print karne ke liye
+function printList(head) {
+  let current = head;
+  let result = [];
+  while (current !== null) {
+    result.push(current.val);
+    current = current.next;
+  }
+  console.log(result.join(" -> "));
+}
+
+// 🌟 Main Function: Dono lists ko merge karne ka orchestrator
 function mergeList(list1, list2) {
   const dummy = new ListNode(0);
   let current = dummy;
 
   while (list1 !== null && list2 !== null) {
-    if (list1.val < list2.val) {
-      current.next = list1;
-      list1 = list1.next;
-    } else {
-      current.next = list2;
-      list2 = list2.next;
-    }
-    current = current.next;
+    // Modularity ka jaadu: Chota node aur updated lists hasil kiye
+    let mergedData = getNextNodeToMerge(list1, list2);
+    
+    // Node attach kiya aur current ko aage sarka diya
+    current = attachNode(current, mergedData.selectedNode);
+    
+    // Pointers update kiye
+    list1 = mergedData.updatedList1;
+    list2 = mergedData.updatedList2;
   }
 
-  // 👉 Correction 2: Agar koi list bach gayi hai, usay aage jod do
-  if (list1 !== null) {
-    current.next = list1;
-  } else {
-    current.next = list2;
-  }
+  // Bachi hui list ko attach kar diya
+  attachRemainingNodes(current, list1, list2);
 
-  // 👉 Correction 3: Dummy ke aage wali poori list return kardo
   return dummy.next;
 }
 
-function printList(head) {
-  let current = head;
-  let result = [];
+// --- Testing ---
+const list1 = new ListNode(1, new ListNode(3, new ListNode(5)));
+const list2 = new ListNode(2, new ListNode(4, new ListNode(6)));
 
-  while (current !== null) {
-    result.push(current.val);
-    current = current.next;
-  }
-
-  console.log(result.join(" -> "));
-}
-
-// Ab isko aise use karo:
+console.log("Merged Sorted List:");
 const mergedHead = mergeList(list1, list2);
-printList(mergedHead);
-
+printList(mergedHead); 
+// Output: 1 -> 2 -> 3 -> 4 -> 5 -> 6 🎉
